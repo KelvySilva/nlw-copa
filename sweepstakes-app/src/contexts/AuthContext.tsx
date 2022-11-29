@@ -30,7 +30,6 @@ export const AuthContext = createContext({} as AuthContextDataProps)
 
 export function AuthContextProvider({children}: AuthProviderProps) {  
   const [user, setUser] = useState<UserProps>({} as UserProps)
-  console.log(AuthSession.makeRedirectUri({ useProxy: true}))
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId: credentials.client_id,
     redirectUri: AuthSession.makeRedirectUri({ useProxy: true}),
@@ -41,22 +40,22 @@ export function AuthContextProvider({children}: AuthProviderProps) {
 
   
 
-  async function signInWithGoogle(access_token: string) {
-    console.log("Token: ", access_token);     
-    // try {  
+  async function signInWithGoogle(access_token: string) {  
+    try {  
        setIsUserLoading(true)
-       await api.post('/users', {access_token}).then(response => {
-         console.log("response: ", response);        
-       }).catch(err => { 
-        console.log("token error: ", err);
-        
-       })
+      const response = await api.post('/users', {access_token})
+      api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
+
+      const userInfoResponse = await api.get('/me')
+      setUser(userInfoResponse.data.user);
        
-    // } catch (error) {
-    //   debugger;
-    //   console.log('error access_token: ',JSON.stringify(error)); 
-    //   throw error
-    // } 
+    } catch (error) {
+      debugger;
+      console.log('error access_token: ',JSON.stringify(error)); 
+      throw error
+    }  finally {
+      setIsUserLoading(false)
+    }
   }
 
 

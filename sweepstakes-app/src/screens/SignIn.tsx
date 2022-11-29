@@ -9,7 +9,6 @@ export function SignIn () {
   // key: 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
 
   const { signIn, user } = useAuth()
-  console.log("Dados do usuário: ", user);
   
   return (
     <Center flex={1} bgColor="gray.900" p={7}>    

@@ -33,7 +33,7 @@ async function bootstrap() {
   await fastify.register(guessRoutes)  
   await fastify.register(gameRoutes)  
 
-  await fastify.listen({port: 3333 /*host: '0.0.0.0'*/ }, (err, address) => {
+  await fastify.listen({port: 3333 ,host: '192.168.237.64' }, (err, address) => {
     console.log('Rodando em: ', address)
   })
 }
